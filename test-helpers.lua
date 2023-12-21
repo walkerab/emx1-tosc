@@ -1,6 +1,6 @@
 function assert(assertion, failure_message)
   failure_message = failure_message or ""
-  if not assertion then error(failure_message) end
+  if not assertion then error(failure_message, 2) end
 end
 
 function equals(o1, o2)
