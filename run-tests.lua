@@ -81,10 +81,10 @@ function runTests(args)
   assert(peekControlChangeStash({ MIDIMessageType.CONTROLCHANGE+2, 1 }) == nil)
   
   clearControlChangeStash()
-  assert(equals(popControlChangeStash(), {}))
+  assert(equals(peekControlChangeStash(), {}))
   clearControlChangeStash()
   stashControlChange({ MIDIMessageType.CONTROLCHANGE, 1, 102 })
-  assert(equals(popControlChangeStash(), {
+  assert(equals(peekControlChangeStash(), {
     [MIDIMessageType.CONTROLCHANGE] = {
       [1] = 102
     }

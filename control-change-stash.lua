@@ -28,12 +28,6 @@ function clearControlChangeStash()
   control_change_stash = {}
 end
 
-function popControlChangeStash()
-  control_change_stash_copy = control_change_stash
-  clearControlChangeStash()
-  return control_change_stash_copy
-end
-
 function sequenceFromControlChangeStash(control_change_stash)
   local acc = {}
   for channel, control_codes in pairs(control_change_stash) do
