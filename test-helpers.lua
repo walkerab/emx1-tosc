@@ -3,26 +3,18 @@ function assert(assertion, failure_message)
   if not assertion then error(failure_message) end
 end
 
-function equals(o1, o2, ignore_mt)
+function equals(o1, o2)
   if o1 == o2 then return true end
   local o1Type = type(o1)
   local o2Type = type(o2)
   if o1Type ~= o2Type then return false end
   if o1Type ~= 'table' then return false end
 
-  if not ignore_mt then
-      local mt1 = getmetatable(o1)
-      if mt1 and mt1.__eq then
-          --compare using built in method
-          return o1 == o2
-      end
-  end
-
   local keySet = {}
 
   for key1, value1 in pairs(o1) do
       local value2 = o2[key1]
-      if value2 == nil or equals(value1, value2, ignore_mt) == false then
+      if value2 == nil or equals(value1, value2) == false then
           return false
       end
       keySet[key1] = true
@@ -40,3 +32,16 @@ function assertSent(drum_section_1_mask, drum_section_2_mask, synth_section_mask
   assert(debug_last_sent.synth_section_mask == synth_section_mask, "synth_section_mask == "..debug_last_sent.synth_section_mask)
 end
 
+function printTable(t, indent)
+  local indent = indent or 0
+  print(string.rep("  ", indent).."{")
+  for k, v in pairs(t) do
+    if type(v) ~= "table" then
+      print(string.rep("  ", indent+1)..k, ":", v)
+    else
+      print(string.rep("  ", indent+1)..k, ":")  
+      printTable(v, indent+1)
+    end
+  end
+  print(string.rep("  ", indent).."}")
+end

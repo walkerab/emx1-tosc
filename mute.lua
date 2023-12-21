@@ -20,3 +20,15 @@ function sendMuteNRPN(drum_section_1_mask, drum_section_2_mask, synth_section_ma
     drum_section_2_mask = drum_section_2_mask
   }
 end
+
+function messageIsMuteNRPN(message)
+  return isControlChange(message) and (
+    message[2] == 99
+    or
+    message[2] == 98
+    or
+    message[2] == 6
+    or
+    message[2] == 38
+  )
+end

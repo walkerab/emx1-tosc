@@ -1,17 +1,20 @@
 methods = {
-  queueGrid = queueGrid,
   runTests = runTests,
+  queueGrid = queueGrid,
   startPushGrid = startPushGrid,
-  endPushGrid = endPushGrid
+  endPushGrid = endPushGrid,
+  startStashingControlChanges = startStashingControlChanges,
+  stopStashingControlChanges = stopStashingControlChanges,
+  playBackControlChangeStash = playBackControlChangeStash,
+  clearControlChangeStash = clearControlChangeStash
 }
 
 function onReceiveNotify(from, to)
---  _G[method](args)
   method, args = table.unpack(to)
+  print("onReceiveNotify", method)
   print(method, args)
   for k,v in pairs(args) do
     print(k, ":", v)
   end
---  loadstring(method.."()")(args)
   methods[method](args)
 end
