@@ -72,24 +72,64 @@ function runTests(args)
 
   -- can save/replay last value of control changes
   stashControlChange({ MIDIMessageType.CONTROLCHANGE, 1, 102 })
-  assert(peekControlChange({ MIDIMessageType.CONTROLCHANGE, 1 }) == 102)
+  assert(peekControlChangeStash({ MIDIMessageType.CONTROLCHANGE, 1 }) == 102)
   stashControlChange({ MIDIMessageType.CONTROLCHANGE, 1, 127 })
-  assert(peekControlChange({ MIDIMessageType.CONTROLCHANGE, 1 }) == 127)
+  assert(peekControlChangeStash({ MIDIMessageType.CONTROLCHANGE, 1 }) == 127)
   stashControlChange({ MIDIMessageType.CONTROLCHANGE+2, 1, 1 })
-  assert(peekControlChange({ MIDIMessageType.CONTROLCHANGE+2, 1 }) == 1)
+  assert(peekControlChangeStash({ MIDIMessageType.CONTROLCHANGE+2, 1 }) == 1)
   clearControlChangeStash()
-  assert(peekControlChange({ MIDIMessageType.CONTROLCHANGE+2, 1 }) == nil)
+  assert(peekControlChangeStash({ MIDIMessageType.CONTROLCHANGE+2, 1 }) == nil)
   
-  -- clearControlChangeStash()
-  -- assert(equals(popControlChangeStash(), {}, true))
-  -- stashControlChange({ MIDIMessageType.CONTROLCHANGE, 1, 102 })
-  -- table.concat(popControlChangeStash())
-  -- assert(equals(popControlChangeStash(), {
-  --   [MIDIMessageType.CONTROLCHANGE] = {
-  --     [1] = 102
-  --   }
-  -- }, true), "oopsy")
-  -- assert(sequenceFromControlChangeStash(popControlChangeStash() == {}))
+  clearControlChangeStash()
+  assert(equals(peekControlChangeStash(), {}))
+  clearControlChangeStash()
+  stashControlChange({ MIDIMessageType.CONTROLCHANGE, 1, 102 })
+  assert(equals(peekControlChangeStash(), {
+    [MIDIMessageType.CONTROLCHANGE] = {
+      [1] = 102
+    }
+  }), "oopsy")
+  
+  assert(equals(
+    sequenceFromControlChangeStash({
+      [MIDIMessageType.CONTROLCHANGE] = {
+        [1] = 102
+      }
+    }),
+    {
+      { MIDIMessageType.CONTROLCHANGE, 1, 102 }
+    }
+  ))
+  assert(equals(
+    sequenceFromControlChangeStash({
+      [MIDIMessageType.CONTROLCHANGE] = {
+        [1] = 102
+      },
+      [MIDIMessageType.CONTROLCHANGE+1] = {
+        [1] = 102
+      }
+    }),
+    {
+      { MIDIMessageType.CONTROLCHANGE, 1, 102 },
+      { MIDIMessageType.CONTROLCHANGE+1, 1, 102 }
+    }
+  ))
+  assert(equals(
+    sequenceFromControlChangeStash({
+      [MIDIMessageType.CONTROLCHANGE] = {
+        [1] = 102,
+        [2] = 100
+      },
+      [MIDIMessageType.CONTROLCHANGE+1] = {
+        [1] = 102
+      }
+    }),
+    {
+      { MIDIMessageType.CONTROLCHANGE, 1, 102 },
+      { MIDIMessageType.CONTROLCHANGE, 2, 100 },
+      { MIDIMessageType.CONTROLCHANGE+1, 1, 102 }
+    }
+  ))
 
   print("All tests passed!")
 end

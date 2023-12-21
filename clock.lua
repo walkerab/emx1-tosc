@@ -43,5 +43,8 @@ function onReceiveMIDI(message, connections)
     stop()
   elseif message[1] == MIDIMessageType.CLOCK and playing then
     advanceClock()
+  elseif stash_control_changes and isControlChange(message) and not messageIsNRPN(message) then
+    stashControlChange(message)
+    debugControlChangeStash()
   end
 end
