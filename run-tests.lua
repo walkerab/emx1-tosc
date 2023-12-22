@@ -131,8 +131,5 @@ function runTests(args)
     }
   ))
 
-  -- Fills
-  -- assert()
-
   print("All tests passed!")
 end
